@@ -3,7 +3,7 @@
 Name: OrderBook System
 Author: czq01
 
-project dependency: `g++>=10`, `Cmake>=3.9.0`
+project dependency: `g++>=9`, `Cmake>=3.9.0`
 
 ## Structure
 
