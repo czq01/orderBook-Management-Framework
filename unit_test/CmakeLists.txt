@@ -1,0 +1,22 @@
+cmake_minimum_required(VERSION 3.9.0)
+project(unit_test VERSION 0.1.0 LANGUAGES C CXX)
+
+include(CTest)
+enable_testing()
+
+message("set output dir: " ${BASE_PATH})
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${BASE_PATH}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${BASE_PATH}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BASE_PATH}/bin)
+
+message("set include dir:" ${PROJ_INCLUDE_PATH})
+include_directories(
+    ${PROJ_INCLUDE_PATH}
+    ${PROJ_INCLUDE_PATH}/**
+)
+
+add_executable(test1 test1.cpp)
+
+set(CPACK_PROJECT_NAME ${PROJECT_NAME})
+set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
+include(CPack)
