@@ -167,14 +167,13 @@ public:
 class DiskBookManager {
     DiskArray<OrderBook> m_books;
     DiskSearchArray<__uint64_t> m_idx_arr;
-    __uint64_t m_last_epoch;
     std::mutex m_lock;
 
 public:
     char symbol[8];
 
     DiskBookManager(const char * symbol):
-        m_books(symbol), m_last_epoch(0) {}
+        m_books(symbol) {}
 
     // get one orderbook
     const OrderBook get_snapshot(__uint64_t time) {

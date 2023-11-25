@@ -190,7 +190,7 @@ public:
             case 'N': _add_new_order(order); break;
             case 'C': _cancel_order(order); break;
             case 'T': _trade_order(order); break;
-            default: _not_implemented_error(); break;
+            default: _not_implemented_error(); return;
         }
         m_last_epoch = order.epoch;
         _update_order_book();
