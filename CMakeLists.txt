@@ -8,6 +8,7 @@ enable_testing()
 set(BASE_PATH ${PROJECT_SOURCE_DIR})
 
 # compile option:
+SET(CMAKE_BUILD_TYPE "Release")
 add_compile_options(-O2 -std=c++17 -mavx)
 
 # include & link

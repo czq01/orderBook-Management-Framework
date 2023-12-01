@@ -18,15 +18,19 @@ int main() {
     t1 = Clock::now();
 
     std::vector<std::string> fields {
-        "epoch","symbol", "ask1p", "bid1p", "ask1q", "bid1q", "last trade price", "last trade quantity"
+        "epoch","symbol", "ask1p", "bid1p", "ask1q", "bid1q",
+        "ask2p", "bid2p", "ask2q", "bid2q",
+        "last trade price", "last trade quantity"
     };
 
-    std::string result = engine.get_snapshot("SCH", 1609722944228022079, 1609722944233544470, fields);
+    std::string result = engine.get_snapshot("SCH", 0, 2909722950019872114, fields);
 
     t2 = Clock::now();
     t = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
-    printf("get_snapshot time cost: %ld ms \n\n", t);
-    printf("result:\n");
-    printf("%s", result.c_str());
+    printf("get_snapshot time cost: %ld ms \n", t);
+    int count  = 0;
+    for (char i: result) {count+=i=='\n';}
+    printf("result length: %d\n", count);
+    // printf("%s", result.c_str());
     return 0;
 }

@@ -89,7 +89,7 @@ public:
     // clear all data
     void clear() {
         fclose(m_file);
-        m_file = fopen(file_name, 'w');
+        m_file = fopen(file_name, "w+");
         m_header.clear();
         size = 0;
         m_pointer = 0;
@@ -141,6 +141,25 @@ public:
         fseek(f, 0, SEEK_END);
     }
 
+    void fetchRecords(_T * dst, u_int64_t start_idx, u_int64_t end_idx) const {
+        u_int64_t sf = start_idx/_SplitSize,
+                  ef = end_idx/_SplitSize,
+                  sm = start_idx%_SplitSize,
+                  em = end_idx%_SplitSize;
+        _T * raw =  dst;
+        while (sf != ef) {
+            FILE * f = m_files[sf];
+            fseek(f, sm*sizeof(_T), SEEK_SET);
+            fread(static_cast<void*>(raw), sizeof(_T)*(_SplitSize-sm),1,f);
+            fseek(f, 0, SEEK_END);
+            sf++; sm=0; raw += sizeof(_T)*(_SplitSize-sm);
+        }
+        FILE * f = m_files[sf];
+        fseek(f, 0, SEEK_SET);
+        fread(static_cast<void*>(raw), sizeof(_T)*(em-sm+1),1,f);
+        fseek(f, 0, SEEK_END);
+    }
+
     // append record at the back of array
     void insertRecord(const _T& obj) {
         if (m_curr_size==_SplitSize) {
@@ -153,7 +172,7 @@ public:
 
     void updateLast(const _T& obj) {
         FILE * f = m_files.back();
-        fseek(f, sizeof(_T), SEEK_END);
+        fseek(f, -static_cast<int>(sizeof(_T)), SEEK_END);
         fwrite(static_cast<const void*>(&obj), sizeof(_T), 1, m_files.back());
     }
 
@@ -191,9 +210,7 @@ public:
         size_t idx_end = m_idx_arr.get_idx(end);
         books.resize(idx_end-idx_start+1);
         std::unique_lock<std::mutex> ul(m_lock);
-        for (size_t i=idx_start, j=0ul; i<=idx_end; i++, j++) {
-            m_books.fetchRecord(&(books.at(j)), i);
-        }
+        m_books.fetchRecords(books.data(), idx_start, idx_end);
         return books;
     }
 
