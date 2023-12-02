@@ -9,8 +9,8 @@ set(BASE_PATH ${PROJECT_SOURCE_DIR})
 
 # compile option:
 SET(CMAKE_BUILD_TYPE "Release")
-add_compile_options(-O2 -std=c++17 -mavx)
-
+add_compile_options(-O2 -std=c++17 )
+add_compile_options(-march=native -mavx -flto)
 # include & link
 set(PROJ_INCLUDE_PATH ${PROJECT_SOURCE_DIR}/include)
 include_directories(

@@ -33,10 +33,10 @@ public:
     virtual void add_data(Order && order, bool block=true) {}
 
     virtual std::string get_snapshot(std::string symbol, __uint64_t start, __uint64_t end,
-                                const std::vector<std::string>& fields) {}
+                                const std::vector<std::string>& fields) {return "";}
 
     virtual std::unordered_map<std::string, std::string> get_snapshots(const std::vector<std::string>& symbols,
-                 __uint64_t start, __uint64_t end, const std::vector<std::string>& fields) {}
+                 __uint64_t start, __uint64_t end, const std::vector<std::string>& fields) {return {};}
 
     virtual void load_data(std::string_view file_name) {}
 };

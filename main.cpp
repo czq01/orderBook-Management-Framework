@@ -7,7 +7,7 @@ int main() {
 
     OrderBookEngine * engine = OrderBookEngine::get_engine();
     std::vector<Order> orders = FileLoader::load_order_file("../data/SCH.log");
-    for (int i=0; i<10000; i++) {
+    for (int i=0; i<50000; i++) {
         engine->add_data(orders[i]);
     }
 
