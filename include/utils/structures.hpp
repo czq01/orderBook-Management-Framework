@@ -1,6 +1,6 @@
 #ifndef __CZQ01_ORDER_STRUCTURE__
 #define __CZQ01_ORDER_STRUCTURE__
-#include "../base.hpp"
+#include "../base.h"
 
 struct Order {
     __uint64_t epoch;    // unix timestamps in ns

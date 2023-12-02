@@ -18,16 +18,24 @@ include_directories(
     ${PROJ_INCLUDE_PATH}/**
 )
 
-# add unit test
-add_subdirectory(./unit_test)
-
 # output path
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${BASE_PATH}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${BASE_PATH}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BASE_PATH}/bin)
 
-add_executable(order_book main.cpp)
-target_link_libraries(order_book pthread)
+link_directories(
+    ${BASE_PATH}/lib
+    ${BASE_PATH}/lib/**
+)
+
+add_library(orderBook src/base.cpp)
+target_link_libraries(orderBook pthread)
+
+add_executable(order_book_test main.cpp)
+target_link_libraries(order_book_test orderBook)
+
+# add unit test
+add_subdirectory(./unit_test)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

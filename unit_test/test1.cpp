@@ -1,4 +1,4 @@
-# include <base.hpp>
+# include <base.h>
 # include <chrono>
 
 
@@ -57,44 +57,8 @@ bool test_DiskArray() {
     return false;
 }
 
-bool test_BookBuildProcessor() {
-    BookBuildProcessor dbmgr("TSLA");
-    for (int i=0; i<test_len; i+=2) {
-        Order order;
-        order.epoch = i;
-        order.price = i%20+1.5;
-        order.quantity = i%10 +5;
-        order.side = 'B';
-        std::strcpy(order.symbol, "TSLA");
-        order.category = 'N';
-        order.order_id = i+2;
-        dbmgr.processing_order(order);
-    }
-
-    //verify:
-    double max_val = 0;
-    for (int i=0; i<test_len+100; i++) {
-        if (i<20) max_val = (i/2*2)%20+1.5;
-        else max_val = 19.5;
-        std::string result = dbmgr.get_snapshot("TSLA", i, i, {"symbol", "ask1q", "bid1p", "bid1q"});
-        std::string_view tmp = result;
-        int j =  tmp.find('\n', 1); j++;
-        if (tmp.substr(j, 4)!="TSLA")
-            return 1;
-        j+=5;
-        int k = tmp.find(',',j);
-        if (tmp.substr(j, k-j) != "0")
-            return 1;
-        j = k+1; k = tmp.find(',', j);
-        double r = std::atof(tmp.substr(j, k-j).data());
-        if (r != max_val)
-            return 1;
-    }
-    return false;
-}
-
 bool test_Engine() {
-    Engine engine;
+    OrderBookEngine * engine = OrderBookEngine::get_engine();
     for (int i=0; i<test_len; i++) {
         Order order;
         order.epoch = i;
@@ -104,17 +68,17 @@ bool test_Engine() {
         std::strcpy(order.symbol, i%2?"TSLA": "SCSA");
         order.category = 'N';
         order.order_id = i+2;
-        engine.add_data(std::move(order));
+        engine->add_data(std::move(order));
     }
 
     sleep(1);
     //verify:
     double max_val = 0;
-    for (int i=0; i<test_len+100; i+=1) {
+    for (int i=0; i<test_len+100; i++) {
         if (i<20) max_val = (i)%20+1.5;
         else max_val = 20.5 - !(i%2);
         std::string_view symbol = (i%2?"TSLA":"SCSA");
-        auto nested_result = engine.get_snapshots({"TSLA","SCSA"}, i, i, {"symbol", "ask1q", "bid1p", "bid1q"});
+        auto nested_result = engine->get_snapshots({"TSLA","SCSA"}, i, i, {"symbol", "ask1q", "bid1p", "bid1q"});
         std::string_view tmp = nested_result.at(std::string(symbol));
         int j =  tmp.find('\n', 1); j++;
         if (tmp.substr(j, 4)!= symbol)
@@ -128,6 +92,7 @@ bool test_Engine() {
         if (r != max_val)
             return 1;
     }
+    OrderBookEngine::release_engine(engine);
     return false;
 
 
@@ -142,8 +107,7 @@ bool test_Engine() {
 int main() {
 
     auto all_test = {
-        test_DiskSeachArray, test_DiskArray,
-        test_BookBuildProcessor, test_Engine
+        test_DiskSeachArray, test_DiskArray, test_Engine
     };
 
     std::vector<int> test_size {50, 100, 1000};

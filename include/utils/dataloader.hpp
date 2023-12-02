@@ -1,6 +1,6 @@
 #ifndef __CZQ01_DATALOADER__
 #define __CZQ01_DATALOADER__
-#include "../base.hpp"
+#include "../base.h"
 // #include <iostream>
 #include <sstream>
 #include <fstream>

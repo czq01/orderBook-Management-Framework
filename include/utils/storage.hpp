@@ -1,7 +1,7 @@
 #ifndef __CZQ01_FILE_STORAGE__
 #define __CZQ01_FILE_STORAGE__
 #include <array>
-#include "../base.hpp"
+#include "../base.h"
 
 
 // TODO use a folder to store data.
@@ -155,7 +155,7 @@ public:
             sf++; sm=0; raw += sizeof(_T)*(_SplitSize-sm);
         }
         FILE * f = m_files[sf];
-        fseek(f, 0, SEEK_SET);
+        fseek(f, sizeof(_T)*sm, SEEK_SET);
         fread(static_cast<void*>(raw), sizeof(_T)*(em-sm+1),1,f);
         fseek(f, 0, SEEK_END);
     }
@@ -192,7 +192,7 @@ public:
     char symbol[8];
 
     DiskBookManager(const char * symbol):
-        m_books(symbol) {}
+        m_books(symbol) {std::strcpy(this->symbol, symbol);}
 
     // get one orderbook
     const OrderBook get_snapshot(__uint64_t time) {

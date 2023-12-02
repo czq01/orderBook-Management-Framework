@@ -1,22 +1,4 @@
-#ifndef __CZQ01_ORDER_BASE__
-#define __CZQ01_ORDER_BASE__
-#include <cstdio>
-#include <cstring>
-#include <string>
-#include <vector>
-#include <unordered_map>
-#include <list>
-#include <sys/stat.h>
-#include <sys/unistd.h>
-#include <thread>
-#include <queue>
-#include <mutex>
-
-#include "utils/structures.hpp"
-
-#include "utils/storage.hpp"
-
-#include "utils/dataloader.hpp"
+#include <base.h>
 
 struct _OrderVolumeNode{
     u_int64_t order_id;
@@ -221,7 +203,7 @@ public:
 
 };
 
-class Engine {
+class Engine: public OrderBookEngine {
     std::unordered_map<std::string, BookBuildProcessor> m_proc;
     std::queue<Order> m_data_queue;  // queue of new data to be processed
     std::thread m_th_data;  // thread for processsing new data
@@ -294,5 +276,10 @@ public:
 
 };
 
+OrderBookEngine * OrderBookEngine::get_engine() {
+    return new Engine();
+};
 
-#endif
+void OrderBookEngine::release_engine(OrderBookEngine * p) {
+    delete static_cast<Engine*>(p);
+}
