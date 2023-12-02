@@ -82,22 +82,3 @@ use `load_file`(for file) and `add_data`(for Order) API on the main engine to lo
 use `get_snapshot` API on the main engine to fetch snapshot.
 
 
-## Defect and Improvement
-
-### 1. slow in processing new data
-
-Reason: I am using 2-Dimension linked list to store order quantity and id information. this is because I can't be sure that the quantity of CANCEL order will be the remaining value or the initial value. If the quantity indicates the initial value, then any trade happens to the pre-canceled order, there will be a problem in counting quantities.
-
-Improve: If We can determine that quantity of CANCEL order is the quantity to cancel (remaining value), then we can just use 1-dimensional linked list. On each node, only price and total quantity is required.
-
-### 2. cannot handle UNKNOWN order
-
-Reason: current framework match order with `order_id`, we cannot determine which order to modify due to this nature.
-
-Improve: Use the same method in above (1.), we can just modify the total quantity with no need to determine the order id. We can determine the side by trade price.
-
-### 3. a bug in DISKArray
-
-Reason: I am using C-style FILE * structure to implement the framework, but there is a bug that `fread` changed the file buffer, and makes all rest objects same.
-
-Improve: I believe this senario may have something to do with read-write conflict. But I am sure properly close files in spare using `fclose()` and open when necessary will avoid this conflict.
