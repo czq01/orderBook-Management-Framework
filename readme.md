@@ -55,10 +55,10 @@ cd bin/
 ./test1
 # run framework using:
 cd bin/
-./order_book
+./order_book_test
 ```
 
-- Using in other project: just simply copy the `/include` folder, and include only `base.hpp`. Remember to add compile option `-std=c++17` or above.
+- Using in other project: just compile the this project, simply copy the `/include` and `/lib` folder to your own project. Remember to add compile option `-std=c++17` or above.
 
 
 ### API usage
@@ -66,15 +66,18 @@ cd bin/
 just as code appear in file [main.cpp](main.cpp), we can easily use like this:
 
 ```cpp
-Engine engine;
+OrderBookEngine *engine = OrderBookEngine::get_engine();
 //load data
-engine.load_file(file_name);
+engine->load_file(file_name);
 //add new order
 Order order;
-... // construct order
-engine.add_data(order);
+...
+// add to engine
+engine->add_data(order);
 // get snapshot
-string sr = engine.get_snapeshot(args...);
+string sr = engine->get_snapeshot(args...);
+//release the engine
+OrderBookEngine::release_engine(engine);
 ```
 
 use `load_file`(for file) and `add_data`(for Order) API on the main engine to load and preprocess new order data.
